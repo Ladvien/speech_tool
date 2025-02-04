@@ -72,11 +72,11 @@ class MP3Utils:
         filepath: str,
         length_milliseconds: int = 10_000,
         output_filepath: str = "voice_sample.mp3",
+        save_format: str = "mp3",
     ) -> None:
         this_clip = AudioSegment.from_mp3(filepath)
         sound = this_clip[:length_milliseconds]
-
-        sound.export(output_filepath, format="mp3")
+        sound.export(output_filepath, format=save_format)
 
     @staticmethod
     def stich(self, input_dir: str, length_milliseconds: 10_000) -> None:

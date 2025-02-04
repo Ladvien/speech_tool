@@ -7,8 +7,6 @@ import outetts
 from speech_node import DownloadVoiceFiles, VOICE_SAMPLE_URLS, MP3Utils
 
 OUTPUT_DIR = "output"
-
-
 VOICE_PROFILE_PATH = f"{OUTPUT_DIR}/profile.json"
 VOICE_DATA_DIR = "voice_data"
 VOICE_SAMPLE_PATH = "voice_data/sense-sensibility_01_austen_64kb.mp3"
@@ -49,8 +47,8 @@ else:
 # Generate speech
 gen_cfg = outetts.GenerationConfig(
     text="Listen here, jerk! I know you think your are funny. But that's simply not the case!",
-    temperature=0.4,
-    repetition_penalty=1.1,
+    temperature=0.1,
+    repetition_penalty=1.3,
     max_length=4096,
     speaker=speaker,
 )
