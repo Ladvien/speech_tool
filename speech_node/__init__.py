@@ -71,12 +71,21 @@ class MP3Utils:
     def clip(
         filepath: str,
         length_milliseconds: int = 10_000,
-        output_filepath: str = "voice_sample.mp3",
+        sample_start_time_in_milliseconds: int = 0,
+        output_filepath: str = "voice_sample",
         save_format: str = "mp3",
     ) -> None:
         this_clip = AudioSegment.from_mp3(filepath)
         sound = this_clip[:length_milliseconds]
-        sound.export(output_filepath, format=save_format)
+        save_filepath = (
+            output_filepath + "." + save_format
+            if f".{save_format}" not in output_filepath
+            else output_filepath
+        )
+        sound.export(
+            save_filepath,
+            format=save_format,
+        )
 
     @staticmethod
     def stich(self, input_dir: str, length_milliseconds: 10_000) -> None:
@@ -92,6 +101,8 @@ class MP3Utils:
 
             # len() and slicing are in milliseconds
             # halfway_point = len(sound) / 2
+            print(type(sound))
+            quit()
             sound = this_clip[:length_milliseconds]
 
             # Concatenation is just adding
