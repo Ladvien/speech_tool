@@ -1,82 +1,60 @@
+# https://github.com/edwko/OuteTTS/blob/main/docs/interface_v2_usage.md
+# https://www.soundboard.com/sb/Audrey_Hepburn_audio
+
+import os
 import outetts
 
+from speech_node import DownloadVoiceFiles, VOICE_SAMPLE_URLS, MP3Utils
+
+OUTPUT_DIR = "output"
+
+
+VOICE_PROFILE_PATH = f"{OUTPUT_DIR}/profile.json"
+VOICE_DATA_DIR = "voice_data"
+VOICE_SAMPLE_PATH = "voice_data/sense-sensibility_01_austen_64kb.mp3"
+VOICE_SAMPLE_LENGTH_MILLI = 20_000  # 0-30_000 milliseconds
+CLIPPED_SAMPLE_PATH = f"{OUTPUT_DIR}/voice_sample.mp3"
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 # Configure the model
-model_config = outetts.HFModelConfig_v1(
-    model_path="OuteAI/OuteTTS-0.2-500M",
-    language="en",  # Supported languages in v0.2: en, zh, ja, ko
+model_config = outetts.HFModelConfig_v2(
+    model_path="OuteAI/OuteTTS-0.3-1B",
+    tokenizer_path="OuteAI/OuteTTS-0.3-1B",
 )
-
 # Initialize the interface
-interface = outetts.InterfaceHF(model_version="0.2", cfg=model_config)
+interface = outetts.InterfaceHF(model_version="0.3", cfg=model_config)
 
-speaker = interface.load_default_speaker(name="female_1")
-
-# Print available default speakers
-interface.print_default_speakers()
-
-# Load a default speaker
+if not os.path.exists(VOICE_PROFILE_PATH):
+    downloader = DownloadVoiceFiles(
+        VOICE_SAMPLE_URLS,
+        data_dir=VOICE_DATA_DIR,
+    )
+    MP3Utils.clip(
+        VOICE_SAMPLE_PATH,
+        length_milliseconds=VOICE_SAMPLE_LENGTH_MILLI,
+        output_filepath=CLIPPED_SAMPLE_PATH,
+    )
+    speaker = interface.create_speaker(
+        audio_path=CLIPPED_SAMPLE_PATH,
+        whisper_model="large-v3",
+        whisper_device="cpu",
+    )
+    interface.save_speaker(speaker, VOICE_PROFILE_PATH)
+else:
+    # You can create a speaker profile for voice cloning, which is compatible across all backends.
+    speaker = interface.load_speaker(CLIPPED_SAMPLE_PATH)
 
 
 # Generate speech
-output = interface.generate(
-    text="Listen here mother fucker, I don't care what you want to do, knock it off.",
-    temperature=0.1,
+gen_cfg = outetts.GenerationConfig(
+    text="Listen here, jerk! I know you think your are funny. But that's simply not the case!",
+    temperature=0.4,
     repetition_penalty=1.1,
     max_length=4096,
-    # Optional: Use a speaker profile for consistent voice characteristics
-    # Without a speaker profile, the model will generate a voice with random characteristics
     speaker=speaker,
 )
+output = interface.generate(config=gen_cfg)
 
 # Save the generated speech to a file
-output.save("output.wav")
-
-# Optional: Play the generated audio
-# output.play()
-
-
-# import torch
-# import warnings
-# import numpy as np
-# import sounddevice as sd
-# from transformers import AutoProcessor, BarkModel
-
-# # Ignore non-critical warnings
-# warnings.simplefilter("ignore", UserWarning)
-
-# # Choose device (CPU or Apple MPS)
-# # device = "mps" if torch.backends.mps.is_available() else "cpu"
-# device = "cpu"
-
-# # Load model and processor
-# model = BarkModel.from_pretrained("suno/bark").to(device)
-# processor = AutoProcessor.from_pretrained("suno/bark")
-
-
-# model.config.pad_token_id = model.config.eos_token_id  # Avoids warning
-
-
-# # Input text
-# text = "Try it mother fucker"
-
-# # Process input text
-# inputs = processor(text, return_tensors="pt").to(device)
-
-
-# inputs["attention_mask"] = torch.ones_like(inputs["input_ids"], dtype=torch.long)
-
-# # Generate speech (returns a tensor)
-# output = model.generate(**inputs)
-
-# # Extract audio tensor
-# audio_tensor = output.squeeze().cpu()
-
-# # Convert to NumPy array
-# audio_numpy = audio_tensor.numpy()
-
-# # Set sample rate (Bark typically uses 24kHz)
-# sample_rate = 24000  # Adjust if needed
-
-# # Play audio using sounddevice
-# sd.play(audio_numpy, samplerate=sample_rate)
-# sd.wait()  # Wait until playback finishes
+output.save("sample.wav")

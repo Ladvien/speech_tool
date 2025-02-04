@@ -174,3 +174,5 @@ cython_debug/
 .DS_Store
 *.wav
 *.mp3
+voice_data/
+output/
