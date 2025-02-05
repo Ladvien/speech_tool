@@ -16,3 +16,42 @@ A text-to-speech server to inclusion in AI pipelines
 - https://publicdomainreview.org/collection/orson-welles-show-1941/
 - https://librivox.org/
 
+
+
+## Dependencies
+### Linux
+
+
+#### Ubuntu
+```sh
+sudo apt update
+sudo apt install libglslang-dev
+```
+
+#### Manjaro
+```sh
+sudo pacman -S ffmpeg glslang
+
+# Check for version mismatch
+find /usr -name "libglslang-default-resource-limits.so*"
+# If version mismatch
+sudo ln -s /usr/lib/libglslang-default-resource-limits.so.15 /usr/lib/libglslang-default-resource-limits.so.14
+
+# Check for version mismatch
+find /usr -name "libSPIRV.so*"
+# If version mismatch
+
+sudo ldconfig
+```
+
+If NVIDIA is not working:
+```sh
+sudo modprobe -r nvidia_uvm
+sudo modprobe nvidia_uvm
+```
+
+### MacOS
+```
+brew install ffmpeg
+brew install glslang
+```

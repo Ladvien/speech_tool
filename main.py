@@ -3,16 +3,17 @@
 
 import os
 import outetts
+from datetime import datetime
 
 from speech_node import DownloadVoiceFiles, VOICE_SAMPLE_URLS, MP3Utils
 
-DEVICE = "cpu"
+DEVICE = "cuda"
 OUTPUT_DIR = "output"
 VOICE_PROFILE_PATH = f"{OUTPUT_DIR}/profile.json"
 VOICE_DATA_DIR = "voice_data"
 VOICE_SAMPLE_PATH = "voice_data/sense-sensibility_01_austen_64kb.mp3"
-SAMPLE_START_TIME_IN_MILLI = 50_000
-VOICE_SAMPLE_LENGTH_MILLI = 15_000  # 0-15_000 milliseconds
+SAMPLE_START_TIME_IN_MILLI = 100_000
+VOICE_SAMPLE_LENGTH_MILLI = 19_000  # 0-15_000 milliseconds
 CLIPPED_SAMPLE_PATH = f"{OUTPUT_DIR}/voice_sample.wav"
 SPEAKER_JSON_PATH = f"{OUTPUT_DIR}/profile.json"
 
@@ -49,15 +50,24 @@ else:
     speaker = interface.load_speaker(SPEAKER_JSON_PATH)
 
 
-# Generate speech
-gen_cfg = outetts.GenerationConfig(
-    text="Listen here, jerk! I know you think your are funny. But that's simply not the case!",
-    temperature=0.1,
-    repetition_penalty=1.3,
-    max_length=4096,
-    speaker=speaker,
-)
-output = interface.generate(config=gen_cfg)
+while True:
 
-# Save the generated speech to a file
-output.save("sample.wav")
+    text = input("What should I say? ")
+
+    inference_start_time = datetime.now()
+    # Generate speech
+    gen_cfg = outetts.GenerationConfig(
+        text=text,
+        temperature=0.1,
+        repetition_penalty=1.1,
+        max_length=4096,
+        speaker=speaker,
+        voice_characteristics="worn out, ground down, exhausted, weary, tired, fatigued",
+    )
+    output = interface.generate(config=gen_cfg)
+    print(f"Generation time: {datetime.now() - inference_start_time}")
+
+    # Save the generated speech to a file
+    print("Saving output to sample.wav")
+    output.save("sample.wav")
+    # output.play("sounddevice")
