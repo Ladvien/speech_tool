@@ -13,7 +13,8 @@ VOICE_DATA_DIR = "voice_data"
 VOICE_SAMPLE_PATH = "voice_data/sense-sensibility_01_austen_64kb.mp3"
 SAMPLE_START_TIME_IN_MILLI = 50_000
 VOICE_SAMPLE_LENGTH_MILLI = 15_000  # 0-15_000 milliseconds
-CLIPPED_SAMPLE_PATH = f"{OUTPUT_DIR}/voice_sample.mp3"
+CLIPPED_SAMPLE_PATH = f"{OUTPUT_DIR}/voice_sample.wav"
+SPEAKER_JSON_PATH = f"{OUTPUT_DIR}/profile.json"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -45,7 +46,7 @@ if not os.path.exists(VOICE_PROFILE_PATH):
     interface.save_speaker(speaker, VOICE_PROFILE_PATH)
 else:
     # You can create a speaker profile for voice cloning, which is compatible across all backends.
-    speaker = interface.load_speaker(CLIPPED_SAMPLE_PATH)
+    speaker = interface.load_speaker(SPEAKER_JSON_PATH)
 
 
 # Generate speech
