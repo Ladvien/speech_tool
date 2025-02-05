@@ -2,9 +2,9 @@ import requests
 import os
 from rich import print
 from glob import glob
-from pydub import AudioSegment
 import urllib.request
-
+from pedalboard.io import AudioFile
+from pathlib import Path
 
 VOICE_SAMPLE_URLS = [
     "https://archive.org/download/anne_greengables_librivox/anne_of_green_gables_01_montgomery.mp3",
@@ -68,44 +68,51 @@ class DownloadVoiceFiles:
 class MP3Utils:
 
     @staticmethod
-    def clip(
+    def sample(
         filepath: str,
         length_milliseconds: int = 10_000,
         sample_start_time_in_milliseconds: int = 0,
         output_filepath: str = "voice_sample",
-        save_format: str = "mp3",
-    ) -> None:
-        this_clip = AudioSegment.from_mp3(filepath)
-        sound = this_clip[:length_milliseconds]
-        save_filepath = (
-            output_filepath + "." + save_format
-            if f".{save_format}" not in output_filepath
-            else output_filepath
-        )
-        sound.export(
-            save_filepath,
-            format=save_format,
-        )
+        sample_rate=22_050,
+    ) -> Path:
+        start_at_seconds = int(sample_start_time_in_milliseconds / 1000)
+        duration = int(length_milliseconds / 1000)
 
-    @staticmethod
-    def stich(self, input_dir: str, length_milliseconds: 10_000) -> None:
-        mp3_filepaths = glob(f"{input_dir}/*.mp3", recursive=True)
+        with AudioFile(filepath).resampled_to(sample_rate) as f:
+            # Skip until start_at_seconds
+            f.seek(start_at_seconds * f.samplerate)
+            first_ten_seconds = f.read(f.samplerate * duration)
+            with AudioFile(output_filepath, "w", f.samplerate) as out:
+                out.write(first_ten_seconds)
 
-        sound = None
-        for mp3_path in mp3_filepaths:
-            this_clip = AudioSegment.from_mp3(mp3_path)
+        return Path(output_filepath)
 
-            # if not sound:
-            #     sound = this_clip
-            #     continue
+        # sound = this_clip[sample_start_time_in_milliseconds:length_milliseconds]
 
-            # len() and slicing are in milliseconds
-            # halfway_point = len(sound) / 2
-            print(type(sound))
-            quit()
-            sound = this_clip[:length_milliseconds]
+        # save_filepath = (
+        #     output_filepath + "." + save_format
+        #     if f".{save_format}" not in output_filepath
+        #     else output_filepath
+        # )
+        # sound.export(save_filepath, format="wav")
 
-            # Concatenation is just adding
-            # sound = sound + this_clip
+    # @staticmethod
+    # def stich(self, input_dir: str, length_milliseconds: 10_000) -> None:
+    #     mp3_filepaths = glob(f"{input_dir}/*.mp3", recursive=True)
 
-        sound.export("voice_sample.mp3", format="mp3")
+    #     sound = None
+    #     for mp3_path in mp3_filepaths:
+    #         this_clip = AudioSegment.from_mp3(mp3_path)
+
+    #         # if not sound:
+    #         #     sound = this_clip
+    #         #     continue
+
+    #         # len() and slicing are in milliseconds
+    #         # halfway_point = len(sound) / 2
+    #         sound = this_clip[:length_milliseconds]
+
+    #         # Concatenation is just adding
+    #         # sound = sound + this_clip
+
+    #     sound.export("voice_sample.mp3", format="mp3")
