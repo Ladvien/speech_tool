@@ -19,6 +19,11 @@ A text-to-speech server to inclusion in AI pipelines
 
 
 ## Dependencies
+
+### Bark Specific
+I had to onlly the patch linked here:
+- https://github.com/suno-ai/bark/issues/626
+
 ### Linux
 
 
@@ -55,3 +60,16 @@ sudo modprobe nvidia_uvm
 brew install ffmpeg
 brew install glslang
 ```
+
+### TTS Models
+- https://huggingface.co/hexgrad/Kokoro-82M#releases
+
+### Other Models
+- [Recognizing Emotions in Speech](https://github.com/ddlBoJack/emotion2vec)
+- [Speech Emotion Synthesis](https://github.com/NN-Project-2/Emotion-TTS-Emebddings)
+
+
+
+### Upsampling
+- https://github.com/ming024/FastSpeech2?tab=readme-ov-file
+- https://rhasspy.github.io/piper-samples/
