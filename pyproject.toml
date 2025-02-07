@@ -11,7 +11,7 @@ kokoro = "^0.7.9"
 soundfile = "^0.13.1"
 fastapi = {extras = ["standard"], version = "^0.115.8"}
 pedalboard = "^0.9.16"
-
+sounddevice = "^0.5.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^25.1.0"
