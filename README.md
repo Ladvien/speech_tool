@@ -73,3 +73,20 @@ brew install glslang
 ### Upsampling
 - https://github.com/ming024/FastSpeech2?tab=readme-ov-file
 - https://rhasspy.github.io/piper-samples/
+
+## Headless Install on Raspbian
+Please note, when trying to run `poetry install` it may appear to hang in a headless install.  This is caused by the OS prompting the user on the graphical desktop to enter the keyring password.  To bypass it, run the following before:
+
+```
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+# Then
+poetry install
+```
+
+See https://github.com/python-poetry/poetry/issues/8623#issuecomment-1793624371
+and https://github.com/explosion/spaCy/issues/6021
+* For `spacy`, one should run:
+```
+BLIS_ARCH="generic" poetry add spacy
+```
+This ensures `blis`, a `spacy` dependency, can be built on arm.
