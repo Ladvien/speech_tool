@@ -6,15 +6,12 @@ authors = ["C. Thomas Brittain <cthomasbrittain@hotmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.9,<3.13"
+spacy = "3.8.3"
 kokoro = "^0.7.9"
 soundfile = "^0.13.1"
 fastapi = {extras = ["standard"], version = "^0.115.8"}
-pedalboard = "^0.9.16"
-sounddevice = "^0.5.1"
-
-[tool.poetry.group.dev.dependencies]
-black = "^25.1.0"
+# pedalboard = "^0.9.16"
 
 [build-system]
 requires = ["poetry-core"]
