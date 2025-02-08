@@ -12,6 +12,7 @@ kokoro = "^0.7.9"
 soundfile = "^0.13.1"
 fastapi = {extras = ["standard"], version = "^0.115.8"}
 # pedalboard = "^0.9.16"
+pyyaml = "^6.0.2"
 
 [build-system]
 requires = ["poetry-core"]
