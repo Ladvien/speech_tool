@@ -25,5 +25,5 @@ pipeline:
 
   # Request defaults
   speed: 1.0 # Can be set during request
-  voice: "en-US-Wavenet-D" # Can be set during request
+  voice: "af_heart" # Can be set during request
   split_pattern: "\n" # Can be set during request
