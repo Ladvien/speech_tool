@@ -1,29 +1,29 @@
-node:
-  name: "node1"
+name: "node1"
 
-  response:
-    type: stream
-    sample_rate: 24000
-    format: wav
-    compression_level: 0
+response:
+  # TODO: type: stream
+  sample_rate: 24000
+  format: wav
+  compression_level: 0
 
-  pipeline:
-    model:
-    device: cpu # cpu or cuda
-    use_transformer: true
+pipeline:
+  model:
+  device: cpu # cpu or cuda
+  use_transformer: true
 
-    # Model configuration
-    # 'a' = American English
-    # 'b' = British English
-    # 'e' = Spanish
-    # 'f' = French
-    # 'h' = Hindi
-    # 'i' = Italian
-    # 'p' = Portuguese
-    # 'j' = Japanese
-    # 'z' = Chinese
-    language_code: a
-    speed: 1.0
+  # Model configuration
+  # 'a' = American English
+  # 'b' = British English
+  # 'e' = Spanish
+  # 'f' = French
+  # 'h' = Hindi
+  # 'i' = Italian
+  # 'p' = Portuguese
+  # 'j' = Japanese
+  # 'z' = Chinese
+  language_code: a
 
-    voice: "en-US-Wavenet-D"
-    split_pattern: "\n"
+  # Request defaults
+  speed: 1.0 # Can be set during request
+  voice: "en-US-Wavenet-D" # Can be set during request
+  split_pattern: "\n" # Can be set during request

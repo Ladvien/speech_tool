@@ -8,23 +8,19 @@ from fastapi.responses import StreamingResponse
 from uuid import uuid4
 import os
 
-from speech_node.config import Config
-
-CONFIG_PATH = os.environ.get("NODE_CONFIG_PATH", "config.yaml")
-
-with open(CONFIG_PATH, "r") as file:
-    config = Config(**yaml.safe_load(file))
+from speech_node.config import NodeConfig
 
 
 class SpeechNodeServer:
 
-    def __init__(self, config: Config):
+    def __init__(self, config: NodeConfig):
         self.config = config
         self.router = APIRouter()
 
         self.pipeline = KPipeline(
-            lang_code="b",
-            device="cpu",
+            lang_code=self.config.pipeline.language_code,
+            device=self.config.pipeline.device,
+            trf=self.config.pipeline.use_transformer,
             #  model="onnx-community/Kokoro-82M-ONNX",
         )
 
@@ -37,16 +33,23 @@ class SpeechNodeServer:
     def generate_speech(
         self,
         text: str,
-        voice: str,
-        speed: Union[float, int],
-        split_pattern: str,
+        voice: str = None,
+        speed: Union[float, int] = None,
+        split_pattern: str = None,
     ):
 
         unique_id = str(uuid4())
 
+        if voice:
+            self.config.pipeline.voice = voice
+        if speed:
+            self.config.pipeline.speed = speed
+        if split_pattern:
+            self.config.pipeline.split_pattern = split_pattern
+
         generator = self.pipeline(
             text,
-            voice=voice,  # <= change voice he re
+            voice=voice,
             speed=speed,
             split_pattern=split_pattern,
         )
@@ -57,11 +60,15 @@ class SpeechNodeServer:
                 sf.write(
                     buffer,
                     audio,
-                    samplerate=24000,
-                    format="WAV",
+                    samplerate=self.config.response.sample_rate,
+                    format=self.config.response.format,
+                    compression_level=self.config.response.compression_level,
                 )
                 buffer.seek(0)
                 yield buffer.read()
                 buffer.truncate(0)
 
-        return StreamingResponse(iterfile(), media_type="audio/wav")
+        return StreamingResponse(
+            iterfile(),
+            media_type="audio/wav",
+        )

@@ -36,11 +36,3 @@ class NodeConfig:
     def __post_init__(self):
         self.response = ResponseConfig(**self.response)
         self.pipeline = PipelineConfig(**self.pipeline)
-
-
-@dataclass
-class Config:
-    node: NodeConfig
-
-    def __post_init__(self):
-        self.node = NodeConfig(**self.node)
