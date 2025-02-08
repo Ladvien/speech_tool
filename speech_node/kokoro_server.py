@@ -1,5 +1,6 @@
 import io
-from kokoro import KPipeline
+# from kokoro import KPipeline
+from kokoro_onnx import Kokoro
 import soundfile as sf
 from typing import Union
 from fastapi import FastAPI, APIRouter
@@ -17,12 +18,14 @@ class SpeechNodeServer:
         self.config = config
         self.router = APIRouter()
 
-        self.pipeline = KPipeline(
-            lang_code=self.config.pipeline.language_code,
-            device=self.config.pipeline.device,
-            trf=self.config.pipeline.use_transformer,
-            #  model="onnx-community/Kokoro-82M-ONNX",
-        )
+        # self.pipeline = KPipeline(
+        #     lang_code=self.config.pipeline.language_code,
+        #     device=self.config.pipeline.device,
+        #     trf=self.config.pipeline.use_transformer,
+        #     #  model="onnx-community/Kokoro-82M-ONNX",
+        # )
+
+        self.model = Kokoro("kokoro-v1.0.onnx", "voices-v1.0.bin")
 
         self.router.add_api_route(
             "/node/speech",
@@ -47,20 +50,28 @@ class SpeechNodeServer:
         if split_pattern:
             self.config.pipeline.split_pattern = split_pattern
 
-        generator = self.pipeline(
+
+        stream = self.model.create_stream(
             text,
-            voice=voice,
-            speed=speed,
-            split_pattern=split_pattern,
+            voice=self.config.pipeline.voice,
+            speed=self.config.pipeline.speed,
+            lang=self.config.pipeline.language_code,
         )
 
-        def iterfile():
+        # generator = self.pipeline(
+        #     text,
+        #     voice=voice,
+        #     speed=speed,
+        #     split_pattern=split_pattern,
+        # )
+
+        async def iterfile():
             buffer = io.BytesIO()
-            for _, _, audio in generator:
+            async for sample, sample_rate in stream:
                 sf.write(
                     buffer,
-                    audio,
-                    samplerate=self.config.response.sample_rate,
+                    sample,
+                    samplerate=sample_rate,
                     format=self.config.response.format,
                     compression_level=self.config.response.compression_level,
                 )
