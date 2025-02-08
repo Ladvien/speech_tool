@@ -1,4 +1,5 @@
 import io
+
 # from kokoro import KPipeline
 from kokoro_onnx import Kokoro
 import soundfile as sf
@@ -50,7 +51,6 @@ class SpeechNodeServer:
         if split_pattern:
             self.config.pipeline.split_pattern = split_pattern
 
-
         stream = self.model.create_stream(
             text,
             voice=self.config.pipeline.voice,
@@ -73,7 +73,7 @@ class SpeechNodeServer:
                     sample,
                     samplerate=sample_rate,
                     format=self.config.response.format,
-                    compression_level=self.config.response.compression_level,
+                    # compression_level=self.config.response.compression_level,
                 )
                 buffer.seek(0)
                 yield buffer.read()

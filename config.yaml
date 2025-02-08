@@ -21,7 +21,7 @@ pipeline:
   # 'p' = Portuguese
   # 'j' = Japanese
   # 'z' = Chinese
-  language_code: a
+  language_code: en-us
 
   # Request defaults
   speed: 1.0 # Can be set during request
