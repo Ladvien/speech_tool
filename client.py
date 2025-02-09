@@ -9,7 +9,7 @@ url = f"{HOST}/node/speech"
 response = requests.get(
     url,
     params={
-        "text": "How are you doing there you, sexy ass, mother fucker?",
+        "text": "What's up?",
         "voice": "af_bella",
         "speed": 1.1,
         "split_pattern": r"\n+",

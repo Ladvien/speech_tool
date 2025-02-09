@@ -3,7 +3,7 @@ import io
 # from kokoro import KPipeline
 from kokoro_onnx import Kokoro
 import soundfile as sf
-from typing import Union
+from typing import Any, Union
 from fastapi import FastAPI, APIRouter
 import yaml
 from fastapi.responses import StreamingResponse
@@ -18,13 +18,6 @@ class SpeechNodeServer:
     def __init__(self, config: NodeConfig):
         self.config = config
         self.router = APIRouter()
-
-        # self.pipeline = KPipeline(
-        #     lang_code=self.config.pipeline.language_code,
-        #     device=self.config.pipeline.device,
-        #     trf=self.config.pipeline.use_transformer,
-        #     #  model="onnx-community/Kokoro-82M-ONNX",
-        # )
 
         self.model = Kokoro("kokoro-v1.0.onnx", "voices-v1.0.bin")
 
@@ -58,28 +51,21 @@ class SpeechNodeServer:
             lang=self.config.pipeline.language_code,
         )
 
-        # generator = self.pipeline(
-        #     text,
-        #     voice=voice,
-        #     speed=speed,
-        #     split_pattern=split_pattern,
-        # )
-
-        async def iterfile():
-            buffer = io.BytesIO()
-            async for sample, sample_rate in stream:
-                sf.write(
-                    buffer,
-                    sample,
-                    samplerate=sample_rate,
-                    format=self.config.response.format,
-                    # compression_level=self.config.response.compression_level,
-                )
-                buffer.seek(0)
-                yield buffer.read()
-                buffer.truncate(0)
-
         return StreamingResponse(
-            iterfile(),
+            self.stream_file(stream),
             media_type="audio/wav",
         )
+
+    async def stream_file(self, stream: Any):
+        buffer = io.BytesIO()
+        async for sample, sample_rate in stream:
+            sf.write(
+                buffer,
+                sample,
+                samplerate=sample_rate,
+                format=self.config.response.format,
+                # compression_level=self.config.response.compression_level,
+            )
+            buffer.seek(0)
+            yield buffer.read()
+            buffer.truncate(0)
