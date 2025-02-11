@@ -4,7 +4,7 @@ name: "speech_node"
 # "kokoro-v1.0.fp16.onnx",
 # "kokoro-v1.0.int8.onnx",
 # "kokoro-v1.0.onnx"
-model_name: kokoro-v1.0.onnx
+model_name: kokoro-v1.0.int8.onnx
 voices_name: voices-v1.0.bin
 
 response:
