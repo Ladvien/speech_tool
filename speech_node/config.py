@@ -29,9 +29,22 @@ class PipelineConfig:
 
 @dataclass
 class NodeConfig:
+    model_name: str = "kokoro-v1.0.onnx"
+    voices_name: str = "voices-v1.0.bin"
     name: str = "speech"
     response: ResponseConfig = None
     pipeline: PipelineConfig = None
+
+    base_download_link = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0"
+    model_filenames = [
+        "kokoro-v1.0.fp16-gpu.onnx",
+        "kokoro-v1.0.fp16.onnx",
+        "kokoro-v1.0.int8.onnx",
+        "kokoro-v1.0.onnx"
+    ]
+    voices_filenames = [
+        "voices-v1.0.bin"
+    ]
 
     def __post_init__(self):
         self.response = ResponseConfig(**self.response)
