@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "speech_node"
+name = "speech_neuron"
 version = "0.0.1"
 description = ""
 authors = ["C. Thomas Brittain <cthomasbrittain@hotmail.com>"]

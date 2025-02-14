@@ -10,10 +10,10 @@ from fastapi.responses import StreamingResponse
 from uuid import uuid4
 import os
 
-from speech_node.config import NodeConfig
+from speech_neuron.config import NodeConfig
 
 
-class SpeechNodeServer:
+class SpeechNeuronServer:
 
     def __init__(self, config: NodeConfig):
         self.config = config
