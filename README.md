@@ -1,8 +1,9 @@
 # speech_neuron
-A text-to-speech server to convert text to speech using the Kokoro model and FastAPI.
+A text-to-speech server to convert text to speech using the [Kokoro-TTS](https://huggingface.co/spaces/hexgrad/Kokoro-TTS) models and FastAPI.
 
-## Other Neuron Modules
+## Other Neuron Packages
 - [Listening Neuron](https://github.com/Ladvien/listening_neuron)
+<!-- start quick_start -->
 
 ## Quick Start
 Run:
@@ -10,45 +11,7 @@ Run:
 pip install speech_neuron
 ```
 
-Create a `config.yaml` file with the following content:
-```yml
-name: "speech_node"
-
-# "kokoro-v1.0.fp16-gpu.onnx",
-# "kokoro-v1.0.fp16.onnx",
-# "kokoro-v1.0.int8.onnx",
-# "kokoro-v1.0.onnx"
-model_name: kokoro-v1.0.int8.onnx
-voices_name: voices-v1.0.bin
-
-response:
-  # TODO: type: stream
-  sample_rate: 24000
-  format: wav
-  compression_level: 0
-
-pipeline:
-  model:
-  device: cpu # cpu or cuda
-  use_transformer: true
-
-  # Model configuration
-  # 'a' = American English
-  # 'b' = British English
-  # 'e' = Spanish
-  # 'f' = French
-  # 'h' = Hindi
-  # 'i' = Italian
-  # 'p' = Portuguese
-  # 'j' = Japanese
-  # 'z' = Chinese
-  language_code: en-us
-
-  # Request defaults
-  speed: 1.0 # Can be set during request
-  voice: "af_heart" # Can be set during request
-  split_pattern: "\n" # Can be set during request
-```
+Create a `config.yaml` file with the following content, see [Configuration](#configuration) for more details.
 
 Create a `main.py` file with the following content:
 ```py
@@ -79,8 +42,7 @@ import sounddevice as sd
 import soundfile as sf
 from datetime import datetime
 
-HOST = "http://0.0.0.0:8000"
-# HOST = "http://192.168.1.137:8000"
+HOST = "http://0.0.0.0:8000" # <--- Change to your server IP
 url = f"{HOST}/node/speech"
 
 start = datetime.now()
@@ -122,7 +84,52 @@ And then run:
 ```sh
 python client.py
 ```
+<!-- end quick_start -->
 
+<!-- start config -->
+
+## Configuration
+Create a `config.yaml` file with the following content:
+```yaml
+name: "speech_node"
+
+# "kokoro-v1.0.fp16-gpu.onnx",
+# "kokoro-v1.0.fp16.onnx",
+# "kokoro-v1.0.int8.onnx",
+# "kokoro-v1.0.onnx"
+model_name: kokoro-v1.0.int8.onnx
+voices_name: voices-v1.0.bin
+
+response:
+  # TODO: type: stream
+  sample_rate: 24000
+  format: wav
+  compression_level: 0
+
+pipeline:
+  model:
+  device: cpu # cpu or cuda
+  use_transformer: true
+
+  # Model configuration
+  # 'a' = American English
+  # 'b' = British English
+  # 'e' = Spanish
+  # 'f' = French
+  # 'h' = Hindi
+  # 'i' = Italian
+  # 'p' = Portuguese
+  # 'j' = Japanese
+  # 'z' = Chinese
+  language_code: en-us
+
+  # Request defaults
+  speed: 1.0 # Can be set during request
+  voice: "af_heart" # Can be set during request
+  split_pattern: "\n" # Can be set during request
+```
+<!-- end config -->
+****
 
 ## Dependencies
 
