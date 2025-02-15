@@ -9,7 +9,7 @@ pip install speech_neuron
 ```
 
 Create a `config.yaml` file with the following content:
-```
+```yml
 name: "speech_node"
 
 # "kokoro-v1.0.fp16-gpu.onnx",
@@ -120,9 +120,6 @@ And then run:
 ```sh
 python client.py
 ```
-
-
-
 
 
 ## Dependencies
