@@ -1,6 +1,8 @@
 # speech_neuron
 A text-to-speech server to convert text to speech using the Kokoro model and FastAPI.
 
+## Other Neuron Modules
+- [Listening Neuron](https://github.com/Ladvien/listening_neuron)
 
 ## Quick Start
 Run:
