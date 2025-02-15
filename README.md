@@ -1,5 +1,5 @@
 # speech_neuron
-A text-to-speech server to inclusion in AI pipelines
+A text-to-speech server to convert text to speech using the Kokoro model and FastAPI.
 
 
 ## Quick Start
@@ -9,7 +9,44 @@ pip install speech_neuron
 ```
 
 Create a `config.yaml` file with the following content:
-# TODO: Add config.yaml example
+```
+name: "speech_node"
+
+# "kokoro-v1.0.fp16-gpu.onnx",
+# "kokoro-v1.0.fp16.onnx",
+# "kokoro-v1.0.int8.onnx",
+# "kokoro-v1.0.onnx"
+model_name: kokoro-v1.0.int8.onnx
+voices_name: voices-v1.0.bin
+
+response:
+  # TODO: type: stream
+  sample_rate: 24000
+  format: wav
+  compression_level: 0
+
+pipeline:
+  model:
+  device: cpu # cpu or cuda
+  use_transformer: true
+
+  # Model configuration
+  # 'a' = American English
+  # 'b' = British English
+  # 'e' = Spanish
+  # 'f' = French
+  # 'h' = Hindi
+  # 'i' = Italian
+  # 'p' = Portuguese
+  # 'j' = Japanese
+  # 'z' = Chinese
+  language_code: en-us
+
+  # Request defaults
+  speed: 1.0 # Can be set during request
+  voice: "af_heart" # Can be set during request
+  split_pattern: "\n" # Can be set during request
+```
 
 Create a `main.py` file with the following content:
 ```py
@@ -29,12 +66,64 @@ app.include_router(speech_neuron.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+```
+
+Create a client file `client.py` with the following content:
+```py
+import requests
+import io
+import sounddevice as sd
+import soundfile as sf
+from datetime import datetime
+
+HOST = "http://0.0.0.0:8000"
+# HOST = "http://192.168.1.137:8000"
+url = f"{HOST}/node/speech"
+
+start = datetime.now()
+response = requests.get(
+    url,
+    params={
+        "text": """Anyway, it was the Saturday of the football game with Saxon Hall. 
+                   The game with Saxon Hall was supposed to be a very big deal around Pencey. 
+        """,
+        "voice": "af_bella",
+        "speed": 1.1,
+        "split_pattern": r"\n+",
+    },
+    stream=True,
+)
+
+
+# Read the streamed response into memory
+audio_buffer = io.BytesIO()
+for chunk in response.iter_content(chunk_size=4096):
+    if chunk:
+        audio_buffer.write(chunk)
+
+# Play the audio in real-time
+audio_buffer.seek(0)  # Reset buffer for reading
+data, samplerate = sf.read(audio_buffer)
+sd.play(data, samplerate)
+sd.wait()  # Wait for audio to finish playing
+
+print(f"Time taken: {datetime.now() - start}")
 ```
 
 Run:
 ```sh
-python main.py
+python main.py &
 ```
+
+And then run:
+```sh
+python client.py
+```
+
+
+
+
 
 ## Dependencies
 
