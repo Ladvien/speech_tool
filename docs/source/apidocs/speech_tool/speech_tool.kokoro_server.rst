@@ -1,5 +1,5 @@
 :py:mod:`speech_tool.kokoro_server`
-=====================================
+===================================
 
 .. py:module:: speech_tool.kokoro_server
 

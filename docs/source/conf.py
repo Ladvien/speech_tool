@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "speech_neuron"
+project = "speech_tool"
 copyright = "2025, C. Thomas Brittain"
 author = "C. Thomas Brittain"
 release = "0.0.29"
@@ -37,4 +37,4 @@ html_theme = "furo"
 html_static_path = ["_static"]
 
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
-autodoc2_packages = ["../../speech_neuron"]
+autodoc2_packages = ["../../speech_tool"]

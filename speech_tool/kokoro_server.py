@@ -11,10 +11,10 @@ import requests
 from datetime import datetime
 import re
 
-from speech_neuron.config import NodeConfig
+from speech_tool.config import NodeConfig
 
 
-class SpeechNeuronServer:
+class SpeechToolServer:
 
     def __init__(self, config: NodeConfig):
         self.config = config
@@ -63,7 +63,7 @@ class SpeechNeuronServer:
 
         unique_id = str(uuid4())
 
-        text = re.sub(' +', ' ', text)
+        text = re.sub(" +", " ", text)
 
         if voice:
             self.config.pipeline.voice = voice
@@ -99,7 +99,3 @@ class SpeechNeuronServer:
             buffer.seek(0)
             yield buffer.read()
             buffer.truncate(0)
-        
-        
-
-    

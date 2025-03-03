@@ -1,5 +1,5 @@
 :py:mod:`speech_tool.config`
-==============================
+============================
 
 .. py:module:: speech_tool.config
 

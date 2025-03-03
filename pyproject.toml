@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "speech_neuron"
-version = "0.0.4"
+name = "speech_tool"
+version = "0.0.8"
 description = ""
 authors = ["C. Thomas Brittain <cthomasbrittain@hotmail.com>"]
 readme = "README.md"

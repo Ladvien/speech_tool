@@ -1,14 +1,15 @@
-# speech_neuron
+# speech_tool
 A text-to-speech server to convert text to speech using the [Kokoro-TTS](https://huggingface.co/spaces/hexgrad/Kokoro-TTS) models and FastAPI.
 
-## Other Neuron Packages
-- [Listening Neuron](https://github.com/Ladvien/listening_neuron)
+## Other Tool Packages
+- [Thinking Tool](https://github.com/Ladvien/thinking_tool) - an Ollama based LLM server for distributed agentic operations.
+- [Listening Tool](https://github.com/Ladvien/listening_tool)
 <!-- start quick_start -->
 
 ## Quick Start
 Run:
 ```sh
-pip install speech_neuron
+pip install speech_tool
 ```
 
 Create a `config.yaml` file with the following content, see [Configuration](#configuration) for more details.
@@ -19,15 +20,15 @@ import os
 import yaml
 from fastapi import FastAPI
 import uvicorn
-from speech_neuron import SpeechNeuronServer, NodeConfig
+from speech_tool import SpeechToolServer, NodeConfig
 
 CONFIG_PATH = os.environ.get("NODE_CONFIG_PATH", "config.yaml")
 config = NodeConfig(**yaml.safe_load(open(CONFIG_PATH, "r")))
 
 app = FastAPI()
 
-speech_neuron = SpeechNeuronServer(config)
-app.include_router(speech_neuron.router)
+speech_tool = SpeechToolServer(config)
+app.include_router(speech_tool.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
